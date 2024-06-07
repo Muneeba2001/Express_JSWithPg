@@ -4,6 +4,9 @@ import express from "express"
 import syncdb from "./db/init.js"
 import { connectDB } from "./db/config.js"
 import allRoutes from './Routes/allRoutes.js';
+import { productModel, CategoryModel} from "../src/model/association/index.js"
+
+
 const posData = express()
 
 posData.use(express.json());

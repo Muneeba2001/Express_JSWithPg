@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../../db/config.js";
-import CateogryModel from "../Category/index.js";
+import CategoryModel from "../Category/index.js";
 
 const productModel = sequelize.define(
     'Product',{
@@ -26,6 +26,7 @@ const productModel = sequelize.define(
     }
 )
 
-productModel.hasMany(CateogryModel)
-CateogryModel.belongsTo(productModel)
+
+// productModel.hasMany(CateogryModel)
+// CateogryModel.belongsTo(productModel)
 export default productModel;

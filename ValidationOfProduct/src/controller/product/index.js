@@ -1,10 +1,16 @@
+import CategoryModel from "../../model/Category/index.js";
 import productModel from "../../model/product/index.js"
 
 
 const productController = {
     getAll: async(req, res)=>{
        try {
-        const products = await productModel.findAll();
+        const products = await productModel.findAll({
+          include: [{
+            model: CategoryModel,
+            attributes: ['Name']
+        }]
+        });
 
         res.json({
             data: products
@@ -36,17 +42,35 @@ const productController = {
     },
     create: async(req, res)=>{
         try {
-            const payload = req.body;
-            console.log(payload,"Payload");
+            // const payload = req.body;
+            // console.log(payload,"Payload");
+            let {Category, ProductName, Rate, Stock} = req.body;  //Both data attributes are fetching through body
+            console.log(req.body,"Alldata")
+            const productData = {ProductName, Rate, Stock}; // products data is being store in new array
+            const newproduct = await productModel.create(productData); // in new variable data is created through product table
+            await newproduct.save();
 
-            const product = new productModel();
-            product.ProductName = payload.ProductName;
-            product.Stock = payload.Stock;
-            product.Rate = payload.Rate;
-            await product.save();
+            if(Category && Category.length > 0){
+              const categories = await CategoryModel.findAll({
+                where:
+                {
+                  id: Category
+                }
+              })
+              if(Category.length > 0){
+                await newproduct.addCategory(categories);
+              }
+            }
+           else{
+           return res.status(400).json({
+              message: "Category not found."
+            })
+           }
+           
+            await newproduct.save();
 
             res.status(200).json({
-                message: "Product Created.", product
+                message: "Product Created.", newproduct
             })
         } catch (error) {
             console.log(error);

@@ -5,7 +5,7 @@ const saleModel = sequelize.define(
     'Sale',{
         totalAmount:{
             type: DataTypes.STRING,
-            // allowNull: true
+            // allowNull: false
         }
     },
     {

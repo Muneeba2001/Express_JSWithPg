@@ -28,16 +28,20 @@ const CategoryController = {
   create: async (req, res) => {
     try {
       const payload = req.body;
-
-      console.log(payload, "payload");
-
-      const Category = new CategoryModel();
-      Category.Skin_Care = payload.Skin_Care;
-      Category.Hair_Care = payload.Hair_Care;
-      Category.Perfumary = payload.Perfumary;
-      await Category.save();
-
-      res.status(200).json({ message: "Category created", Category });
+      // console.log(payload, "payload");
+      // const { Name } = payload;
+      // console.log(payload)
+      // const Category = new CategoryModel().create({Name})
+      //   await Category.save();
+      const category = new CategoryModel;
+      category.Name = payload.Name;
+      await category.save();
+      if(!category){
+        res.status(404).json({
+          message: "Not Found"
+        })
+      }
+      res.status(200).json({ message: "Category created", category });
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Internal server error" });
@@ -56,20 +60,16 @@ const CategoryController = {
       }
       if (payload.id) {
         CategoryIndex.id = payload.id;
-        if (payload.Skin_Care) {
-          CategoryIndex.Skin_Care = payload.Skin_Care;
-          if (payload.Hair_Care) {
-            CategoryIndex.Hair_Care = payload.Hair_Care;
-            if (payload.Perfumary) {
-             CategoryIndex.Perfumary = payload.Perfumary;
-            }
+        if (payload.name) {
+          CategoryIndex.name = payload.name;}
+    
             res.status(200).json({
               message: "Category Updated",
             });
           }
         }
-      }
-    } catch (error) {
+      
+    catch (error) {
       res.status(500).json({
         message: "Internal server error",
       });

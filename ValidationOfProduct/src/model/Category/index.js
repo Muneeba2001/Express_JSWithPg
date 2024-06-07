@@ -1,24 +1,18 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../../db/config.js";
+import productModel from "../product/index.js";
 
 const CategoryModel = sequelize.define(
-    'Complete_Care',{
-        Skin_Care:{
+    'Category',{
+        Name:{
             type: DataTypes.STRING,
-            allowNull: true
+            // allowNull: true
         },
-        Hair_Care:{
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        Perfumary:{
-            type: DataTypes.STRING,
-            allowNull: true
-        }
     },
     {
         timestamps: false
     }
 )
+
 
 export default CategoryModel;
