@@ -21,7 +21,10 @@ const saleController = {
     getSingle: async(req, res)=>{
         try {
            const {id} = req.params;
-           const sales = await saleModel.findByPk(id);
+           const sales = await saleModel.findByPk(id, {
+            model: saleproductModel,
+            include: [productModel]
+           });
            if(!sales){
             res.status(400).json({
                 message: "No sale Find!!"
@@ -38,13 +41,16 @@ const saleController = {
     },
     create: async (req, res) => {
       try {
+       
+        const { ProductName, Price } = req.body;
         const payload = req.body;
-        const sale = await saleModel.create({ totalAmount: 0 }); // Save sale first to generate id
+        const sale = await saleModel.create({ totalAmount: 0 });
         const salesProduct = [];
-        console.log("request", payload);
+        console.log("request payload:", req.body);
   
-        for (let index = 0; index < payload.salesProducts.length; index++) {
-          const ele = payload.salesProducts[index];
+        for (let i = 0; i < payload.salesProducts.length; i++) {
+          const ele = payload.salesProducts[i];
+          console.log("Processing product:", ele);
   
           const product = await productModel.findByPk(ele.ProductId);
           if (!product) {
@@ -55,41 +61,69 @@ const saleController = {
   
           if (ele.productQuantity > product.Stock) {
             return res.status(400).json({
-              message: "The product " + product.name + " has in-sufficient stock",
+              message: "The product " + product.name + " has insufficient stock",
             });
           }
   
           salesProduct.push({
             ...ele,
-            price: product.price,
+            // price: product.price,
             SaleId: sale.id, // Assign the SaleId
           });
         }
   
+        console.log("Sales Product data before bulk create:", salesProduct);
+  
         await saleproductModel.bulkCreate(salesProduct);
+  
+      
+  
         const totalAmount = salesProduct.reduce((sum, current) => {
-          return sum + (current.Price * current.productQuantity);
+          // Log current values for debugging
+          console.log(
+            `Price: ${current.Price}, Quantity: ${current.Quantity}`
+          );
+  
+          // Add defensive checks for undefined, null, or non-numeric values
+          const Price = Number(current.Price);
+          const Quantity = Number(current.Quantity);
+          console.log(Price)
+          console.log(Quantity)
+          if (isNaN(Price) || isNaN(Quantity)) {
+            // Handle invalid or missing values
+            console.error("Invalid or missing price or quantity:", current);
+            return sum;
+          }
+  
+          // Perform the calculation
+          console.log(`Calculating sum: ${sum} + (${Price} * ${Quantity})`);
+          return sum + Price * Quantity;
         }, 0);
   
-        sale.totalAmount = totalAmount;
-        await sale.save();
+        console.log("Total Amount calculated:", totalAmount);
+  
+        // Assuming the existence of a Sale model and the creation of a new sale
+        // Replace Sale.create(...) with your actual code to save the sale to the database
+  
+        const newSale = await saleModel.create({
+          totalAmount: isNaN(totalAmount) ? null : totalAmount,
+          // Other properties of the sale...
+        });
+  
+        console.log("Sale saved with total amount:", newSale.totalAmount);
   
         for (const sp of salesProduct) {
           const product = await productModel.findByPk(sp.ProductId);
-          product.Stock -= sp.productQuantity;
+          product.Stock -= sp.Quantity;
           await product.save();
         }
   
-        res.status(200).json({ message: "sale created", sale });
-  
+        res.status(200).json({ message: "Sale created", sale,totalAmount });
       } catch (error) {
-          console.log(error);
-          res.status(500).json({
-              message: "Internal Server Error"
-          });
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
       }
-  },
-  
+    },
       
             // const salesProduct = payload.saleProducts.map((ele) => {
             //   return {

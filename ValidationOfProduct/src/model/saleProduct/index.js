@@ -13,10 +13,7 @@ const saleproductModel = sequelize.define(
             type: DataTypes.STRING,
             // allowNull: true
         },
-        Stock :{
-            type: DataTypes.STRING,
-            // allowNull: true
-        }
+       
 
         
     },

@@ -5,7 +5,7 @@ const TokenModel = sequelize.define(
   'Token',
   {
     token: {
-      type: DataTypes.STRING(500),
+      type: DataTypes.STRING(),
       
     },
    

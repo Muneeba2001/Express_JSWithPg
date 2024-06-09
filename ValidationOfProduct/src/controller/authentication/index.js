@@ -52,12 +52,6 @@ const userAuthenticationController = {
                 Email : userCheck.Email,
                 //password : checkPost.password
             }
-
-            //secure Token 
-            
-            // console.log(token);
-
-            //jwt 
             const token = jwt.sign(tokenData,key,{
                 expiresIn : "1hr"
             });

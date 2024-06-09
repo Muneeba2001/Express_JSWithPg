@@ -12,7 +12,7 @@ const sequelize = new Sequelize(dbname, dbusername, dbpassword, {
   logging: console.log
 });
 
-console.log(dbpassword,"gg")
+console.log(dbpassword)
 
 const connectDB = async ()=>{
     try {

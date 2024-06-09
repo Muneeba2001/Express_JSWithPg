@@ -5,7 +5,10 @@ import userAuthMiddleWare from "../../middleware/index.js"
 
 const userAuthenticationRouter = Router();
 
-userAuthenticationRouter.post("/SignUp",userAuthMiddleWare,userAuthenticationController.SignUp);
-userAuthenticationRouter.post("/LogIn", AuthValidators.LogIn, userAuthenticationController.LogIn);
+// userAuthenticationRouter.post("/SignUp",userAuthenticationController.SignUp);
+// userAuthenticationRouter.post("/LogIn", userAuthenticationController.LogIn);
+
+userAuthenticationRouter.post("/SignUp",userAuthenticationController.SignUp);
+userAuthenticationRouter.post("/LogIn", AuthValidators.LogIn, userAuthMiddleWare,userAuthenticationController.LogIn);
 
 export default userAuthenticationRouter;
