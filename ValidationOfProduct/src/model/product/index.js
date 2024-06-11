@@ -6,6 +6,7 @@ const productModel = sequelize.define(
     'Product',{
       ProductName :{
             type: DataTypes.STRING,
+            
     
         },
         Stock :{

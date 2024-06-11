@@ -35,7 +35,7 @@ const userAuthMiddleWare = async (req, res, next) => {
       console.log("Token successfully verified", decoded);
 
       // Pass control to the next middleware
-   
+      next();
     } catch (error) {
       console.log("Token verification failed", error);
       return res.status(401).json({ message: "Unauthorized" });
@@ -44,7 +44,7 @@ const userAuthMiddleWare = async (req, res, next) => {
     console.log("Internal server error", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-  next();
+ 
 };
 
 export default userAuthMiddleWare;
